@@ -112,7 +112,15 @@ public class MinesweeperImpl implements Minesweeper{
 	}
 	
 	public void uncover(int row, int col) {
-		
+		if (!this.matrixCell[row][col].getIsCover()){
+			System.out.println("You already uncover this cell");
+		}
+		else{
+			this.matrixCell[row][col].setIsCover(false);
+			/*if (this.matrixCell[row][col].getValue().equals(0)){
+				MatrixUtils.cascade();
+			}*/
+		}
 		
 	}
 
@@ -124,12 +132,38 @@ public class MinesweeperImpl implements Minesweeper{
 		this.matrixCell[row][col].setHasAFlag(false);
 	}
 
+	private Boolean thereIsAnUncoverMine (){
+		int i,j;
+		Boolean var=false;
+		for (i=0;i<this.matrixCell.length;i++){
+			for (j=0;j<this.matrixCell[0].length;j++){
+				if (this.matrixCell[i][j].getValue().equals(-1) && this.matrixCell[i][j].getIsCover().equals(false)){
+					var=true;
+				}
+			}
+		}
+		return var;
+	}
+	
+	private Boolean allCellsWithoutMinesAreUncover(){
+		int i,j;
+		Boolean var=true;
+		for (i=0;i<this.matrixCell.length;i++){
+			for (j=0;j<this.matrixCell[0].length;j++){
+				if (!this.matrixCell[i][j].getValue().equals(-1) && this.matrixCell[i][j].getIsCover().equals(true)){
+					var=false;
+				}
+			}
+		}
+		return var;
+	}
+	
 	public boolean isGameOver() {
-		return false;
+		return (allCellsWithoutMinesAreUncover() || thereIsAnUncoverMine()) ? true: false;
 	}
 
 	public boolean isWinningGame() {
-		return false;
+		return (allCellsWithoutMinesAreUncover() && !thereIsAnUncoverMine()) ? true:false;
 	}
 
 	public void display() {
@@ -137,19 +171,25 @@ public class MinesweeperImpl implements Minesweeper{
 		for (i=0;i<this.matrixCell.length;i++){
 			System.out.println ("\n");
 			for (j=0;j<this.matrixCell[0].length;j++){
-				if (this.matrixCell[i][j].getIsCover()){
+				
+				if (this.matrixCell[i][j].getIsCover() && !this.matrixCell[i][j].getHasAFlag()){
 					System.out.println ("-\t");
 				}
-				else{
-					if (thereIsMine (i,j)){
-						System.out.println ("M\t");
+				else{	
+					if (this.matrixCell[i][j].getHasAFlag()){
+						System.out.println ("F\t");
 					}
 					else{
-						System.out.println (this.matrixCell[i][j].getValue()+"\t");
+						if (thereIsMine (i,j)){
+							System.out.println ("M\t");
+						}
+						else{
+							System.out.println (this.matrixCell[i][j].getValue()+"\t");
+						}
 					}
 				}
-			}	
-		}
+			}//End second for	
+		}//End first for
 	}
 
 	public void displayInternal() {
@@ -183,9 +223,3 @@ public class MinesweeperImpl implements Minesweeper{
 	
 }//End class
 	
-	  
-
-
-
-
-}//End Class
