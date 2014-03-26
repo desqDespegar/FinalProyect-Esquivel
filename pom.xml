@@ -3,12 +3,13 @@
   <groupId>com.despegar.hf</groupId>
   <artifactId>minesweeper-finalproject</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-	<Dependencies>
-	<dependency>
-<groupId>com.despegar.highflight</groupId>
-<artifactId>matrix-utils</artifactId>
-<version>0.0.1</version>
-</dependency>
-</Dependencies>
+  
+	<dependencies>
+		<dependency>
+			<groupId>com.despegar.highflight</groupId>
+			<artifactId>matrix-utils</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+	</dependencies>
 
 </project>

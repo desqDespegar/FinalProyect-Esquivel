@@ -5,10 +5,10 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main (String [] args){
-		Integer row = null,column = null,kMine = null,rowN=null,columnN=null;
-		char action=null;
+		Integer row,column,kMine,rowN,columnN;
+		Character action;
 		Scanner scanner = new Scanner (System.in);
-		System.out.println ("\n Choose the difficulty \n(1_Beginner; 2_Intermediate; 3_Hard; 0_Personalized");
+		System.out.println ("\n Choose the difficulty \n(1_Beginner; 2_Intermediate; 3_Hard; 0_Personalized)");
 		switch (scanner.nextInt()){
 		case 0:
 			System.out.println ("\n Enter the number of Rows:");
@@ -33,25 +33,46 @@ public class Main {
 			column=30;
 			kMine=100;
 			break;
+		default:
+			row=0;
+			column=0;
+			kMine=0;
+			break;
+			
 		}
-		System.out.println ("\n There is three different actions:\n If you want to Uncover a mine, then enter 'u' \n If you want to Put a flag, then enter 'f' ,\n If you want to Clear a flag, then enter 'c'");
+		System.out.println ("\n There is three different actions:\n If you want to Uncover a mine, then enter 'u' \n If you want to Put a flag, then enter 'f' ,\n If you want to Clear a flag, then enter 'c')");
 		System.out.println ("When you enter the action, then select a row and a column");
-		MinesweeperImpl game = new MinesweeperImpl(row,column,kMine);
+		MinesweeperImpl game = new MinesweeperImpl(row,column,kMine);       
 		game.display();
+		/*System.out.println ("\n Display internal");
+		game.displayInternal();
+		System.out.println ("\nDisplay raw");
+		game.displayRaw();*/
 		while (!game.isGameOver()){
 			System.out.println ("\n What do you want to do?(enter the corresponding letter): ");
-			action= scanner.next();
+			action= scanner.next().charAt(0);
 			System.out.println ("\n Enter the row: ");
 			rowN= scanner.nextInt();
 			System.out.println ("\n Enter the column: ");
 			columnN= scanner.nextInt();
 			switch (action){
-			case
+			case ('u'):
+				game.uncover(rowN, columnN);
+				break;
+			case ('f'):
+				game.flagAsMine(rowN, columnN);
+				break;
+			case ('c'):
+				game.clearFlag(rowN, columnN);
+				break;
 			}
-			
+			game.display();
 		}
-		
-		
-		
+		if (game.isWinningGame()){
+			System.out.println ("CONGRATULATION! YOU WIN! :D");
+		}
+		else{
+				System.out.println ("HA HA! LOSER!");
+			}		
 	}//End main
 }//End class

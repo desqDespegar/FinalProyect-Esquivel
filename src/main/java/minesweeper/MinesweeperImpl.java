@@ -1,10 +1,12 @@
 package minesweeper;
 
 import java.util.*;
+
+import com.despegar.highflight.utils.MatrixUtils;
 public class MinesweeperImpl implements Minesweeper{
 	
 	public Cell[][] matrixCell;
-	public Integer[][] binaryMatrix;
+	public int[][] binaryMatrix;
 	
 	private Boolean thereIsMine (Integer row, Integer column){
 		return this.matrixCell[row][column].getValue().equals(-1) ? true: false;
@@ -12,6 +14,7 @@ public class MinesweeperImpl implements Minesweeper{
 	
 	private void createMatrix(Integer row,Integer column){
 		int i,j;
+		this.matrixCell= new Cell[row][column];
 		for (i=0; i<row;i++){
 			for (j=0;j<column;j++){
 				this.matrixCell[i][j]= new Cell();
@@ -21,13 +24,14 @@ public class MinesweeperImpl implements Minesweeper{
 	
 	private void createBinaryMatrix(){
 		int i,j;
+		this.binaryMatrix= new int[this.matrixCell.length][this.matrixCell[0].length];
 		for (i=0;i<this.matrixCell.length;i++){
 			for (j=0;j<this.matrixCell[0].length;j++){
 				if (this.matrixCell[i][j].getValue().equals(-1)){
-					this.binaryMatrix[i][j]=0;
+					this.binaryMatrix[i][j]=1;
 				}
 				else{
-					this.binaryMatrix[i][j]=1;
+					this.binaryMatrix[i][j]=0;
 				}
 			}
 		}
@@ -47,57 +51,61 @@ public class MinesweeperImpl implements Minesweeper{
 		}
 	}
 	
-	private Set<Matrix2DCellPosition> newSetPosition (Set<Matrix2DCellPosition> setPosition, int i, int j){
+	private Set<Matrix2DCellPosition> newSetPosition (int i, int j){
 		Matrix2DCellPosition position= new Matrix2DCellPosition();
-		position.setColumn(i);
-		position.setRow(j-1);
+		Set<Matrix2DCellPosition> setPosition = new HashSet<Matrix2DCellPosition>();
+		position.setRow(i);
+		position.setColumn(j-1);
 		setPosition.add(position);
-		position.setColumn(i);
-		position.setRow(j+1);
+		position= new Matrix2DCellPosition();
+		position.setRow(i);
+		position.setColumn(j+1);
 		setPosition.add(position);
-		position.setColumn(i-1);
-		position.setRow(j);
+		position= new Matrix2DCellPosition();
+		position.setRow(i-1);
+		position.setColumn(j);
 		setPosition.add(position);
-		position.setColumn(i+1);
-		position.setRow(j);
+		position= new Matrix2DCellPosition();
+		position.setRow(i+1);
+		position.setColumn(j);
 		setPosition.add(position);
-		position.setColumn(i-1);
-		position.setRow(j-1);
+		position= new Matrix2DCellPosition();
+		position.setRow(i-1);
+		position.setColumn(j-1);
 		setPosition.add(position);
-		position.setColumn(i-1);
-		position.setRow(j+1);
+		position= new Matrix2DCellPosition();
+		position.setRow(i-1);
+		position.setColumn(j+1);
 		setPosition.add(position);
-		position.setColumn(i+1);
-		position.setRow(j-1);
+		position= new Matrix2DCellPosition();
+		position.setRow(i+1);
+		position.setColumn(j-1);
 		setPosition.add(position);
-		position.setColumn(i+1);
-		position.setRow(j+1);
+		position= new Matrix2DCellPosition();
+		position.setRow(i+1);
+		position.setColumn(j+1);
 		setPosition.add(position);
 		
 		return setPosition;
 	}
 	
 	private Boolean validPosition (Integer row, Integer column, Integer rowLimit, Integer columnLimit){
-		return (row>-1 && row<rowLimit && column>-1 && column<columnLimit) ? true:false;
+		return (row>-1 && row<rowLimit && column>-1 && column<columnLimit);
 	}
 
 	private void assignValueToEmptyCell (Integer row, Integer column){
 		int i,j;
 		for (i=0;i<row;i++){
 			for (j=0;j<column;j++){
-				Set<Matrix2DCellPosition> setPosition = new HashSet<Matrix2DCellPosition>();
-				for (i=0;i<row;i++){
-					for (j=0;j<column;j++){
-						setPosition= newSetPosition(setPosition,i,j); 
-						
-						for (Matrix2DCellPosition t: setPosition){
-							if (validPosition(t.getRow(),t.getColumn(),row,column)){
-								if (thereIsMine(t.getRow(),t.getColumn())){
-									this.matrixCell[i][j].setValue(this.matrixCell[i][j].getValue()+1); //if is a valid position and hasn't got a mine, add 1 to the value of the cell
-								}
+				if (!this.matrixCell[i][j].getValue().equals(-1)){	
+					Set<Matrix2DCellPosition> setPosition =newSetPosition(i,j);
+					for (Matrix2DCellPosition t: setPosition){
+						if (validPosition(t.getRow(),t.getColumn(),row,column)){
+							if (thereIsMine(t.getRow(),t.getColumn())){
+								this.matrixCell[i][j].setValue(this.matrixCell[i][j].getValue() + 1); //if is a valid position and hasn't got a mine, add 1 to the value of the cell
 							}
 						}
-					}	
+					}		
 				}
 			}
 		}
@@ -112,16 +120,16 @@ public class MinesweeperImpl implements Minesweeper{
 	}
 	
 	public void uncover(int row, int col) {
-		if (!this.matrixCell[row][col].getIsCover()){
-			System.out.println("You already uncover this cell");
-		}
-		else{
+		if (this.matrixCell[row][col].getIsCover()){
 			this.matrixCell[row][col].setIsCover(false);
-			/*if (this.matrixCell[row][col].getValue().equals(0)){
-				MatrixUtils.cascade();
-			}*/
-		}
-		
+			if (this.matrixCell[row][col].getValue().equals(0)){
+				Set<com.despegar.highflight.utils.Matrix2DCellPosition> set= MatrixUtils.cascade(this.binaryMatrix,row,col);
+				for (com.despegar.highflight.utils.Matrix2DCellPosition t: set){
+						this.uncover(t.getRow(),t.getColumn());
+				
+				}
+			}
+		}	
 	}
 
 	public void flagAsMine(int row, int col) {
@@ -169,22 +177,22 @@ public class MinesweeperImpl implements Minesweeper{
 	public void display() {
 		int i,j;	
 		for (i=0;i<this.matrixCell.length;i++){
-			System.out.println ("\n");
+			System.out.print ("\n");
 			for (j=0;j<this.matrixCell[0].length;j++){
 				
 				if (this.matrixCell[i][j].getIsCover() && !this.matrixCell[i][j].getHasAFlag()){
-					System.out.println ("-\t");
+					System.out.print ("-\t");
 				}
 				else{	
 					if (this.matrixCell[i][j].getHasAFlag()){
-						System.out.println ("F\t");
+						System.out.print ("F\t");
 					}
 					else{
 						if (thereIsMine (i,j)){
-							System.out.println ("M\t");
+							System.out.print ("M\t");
 						}
 						else{
-							System.out.println (this.matrixCell[i][j].getValue()+"\t");
+							System.out.print (this.matrixCell[i][j].getValue()+"\t");
 						}
 					}
 				}
@@ -195,14 +203,14 @@ public class MinesweeperImpl implements Minesweeper{
 	public void displayInternal() {
 		int i,j;	
 		for (i=0;i<this.matrixCell.length;i++){
-			System.out.println ("\n");
+			System.out.print ("\n");
 			for (j=0;j<this.matrixCell[0].length;j++){
 				if (thereIsMine (i,j)){
-					System.out.println ("M\t");
+					System.out.print ("M\t");
 
 				}
 				else{
-					System.out.println (this.matrixCell[i][j].getValue()+"\t");
+					System.out.print (this.matrixCell[i][j].getValue()+"\t");
 				}
 			}	
 		}
@@ -211,9 +219,9 @@ public class MinesweeperImpl implements Minesweeper{
 	public void displayRaw() {
 		int i,j;	
 		for (i=0;i<this.binaryMatrix.length;i++){
-			System.out.println ("\n");
+			System.out.print ("\n");
 			for (j=0;j<this.binaryMatrix[0].length;j++){
-					System.out.println (this.binaryMatrix[i][j]+"\t");
+					System.out.print (this.binaryMatrix[i][j]+"\t");
 			}
 		}	
 	}

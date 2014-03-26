@@ -30,9 +30,9 @@ public class Cell{
 	}
 
 	public Cell (){
-		this.isCover= Boolean.valueOf(true);
+		this.isCover= true;
 		this.value=0;
-		this.hasAFlag= Boolean.valueOf(false);
+		this.hasAFlag= false;
 	}
 	
 	
