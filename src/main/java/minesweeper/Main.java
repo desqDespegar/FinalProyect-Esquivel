@@ -8,6 +8,8 @@ public class Main {
 		Integer row,column,kMine,rowN,columnN;
 		Character action;
 		Scanner scanner = new Scanner (System.in);
+		String answer="y";
+		while (answer.equals("y")){
 		System.out.println ("\n Choose the difficulty \n(1_Beginner; 2_Intermediate; 3_Hard; 0_Personalized)");
 		switch (scanner.nextInt()){
 		case 0:
@@ -77,6 +79,10 @@ public class Main {
 		else{
 				System.out.println ("\n HA HA! LOSER! \n");	
 				game.displayInternal();
-			}		
+			}
+		System.out.println ("\n\n Do you want to play again?(y/n): ");
+		answer= scanner.next();
+		}
+		
 	}//End main
 }//End class
