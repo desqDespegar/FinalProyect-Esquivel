@@ -135,8 +135,10 @@ public class MinesweeperImpl implements Minesweeper{
 	}
 
 	public void flagAsMine(int row, int col) {
+		if (this.matrixCell[row][col].getIsCover()){
 		this.matrixCell[row][col].setHasAFlag(true);
 		this.numberOfFlags++;
+		}
 	}
 
 	public void clearFlag(int row, int col) {

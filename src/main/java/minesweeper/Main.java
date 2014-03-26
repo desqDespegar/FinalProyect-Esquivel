@@ -41,8 +41,8 @@ public class Main {
 			break;
 			
 		}
-		System.out.println ("\n There is three different actions:\n If you want to Uncover a mine, then enter 'u' \n If you want to Put a flag, then enter 'f' ,\n If you want to Clear a flag, then enter 'c')");
-		System.out.println ("When you enter the action, then select a row and a column");
+		System.out.println ("\n There is three different actions:\n If you want to Uncover a mine, enter 'u' \n If you want to Put a flag, enter 'f' ,\n If you want to Clear a flag, enter 'c')");
+		System.out.println ("\n When you enter the action, then select a row and a column");
 		MinesweeperImpl game = new MinesweeperImpl(row,column,kMine);       
 		game.display();
 		/*System.out.println ("\n Display internal");
@@ -50,7 +50,7 @@ public class Main {
 		System.out.println ("\nDisplay raw");
 		game.displayRaw();*/
 		while (!game.isGameOver()){
-			System.out.println ("\n What do you want to do?('f','u' or 'c'): ");
+			System.out.println ("\n What do you want to do?('u','f' or 'c'): ");
 			action= scanner.next().charAt(0);
 			System.out.println ("\n Enter the row (between 0 and "+(row-1)+"): ");
 			rowN= scanner.nextInt();
