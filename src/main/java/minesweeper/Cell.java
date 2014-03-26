@@ -1,10 +1,10 @@
 package minesweeper;
 
 public class Cell{	
-	private Boolean isCover;
-	private Integer value;
-	private Boolean hasAFlag;
-	
+	private Boolean isCover; //If the cell is cover, it is TRUE, else it is FALSE
+	private Integer value;// It is the number of mines has around. But it is a Mine the value is -1
+	private Boolean hasAFlag;//If the cell is flagged, it is TRUE, else it is FALSE
+	//Getter, setter and the constructor
 	public Boolean getIsCover() {
 		return isCover;
 	}

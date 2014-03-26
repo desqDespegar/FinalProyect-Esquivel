@@ -7,6 +7,8 @@ public class MinesweeperImpl implements Minesweeper{
 	
 	public Cell[][] matrixCell;
 	public int[][] binaryMatrix;
+	private int numberOfFlags=0;//I use this properties for the display
+	private int numberOfMines; //and calculate the unflagged mines
 	
 	private Boolean thereIsMine (Integer row, Integer column){
 		return this.matrixCell[row][column].getValue().equals(-1) ? true: false;
@@ -43,7 +45,7 @@ public class MinesweeperImpl implements Minesweeper{
 		for (i=0;i<kMines;i++){
 			rRow= rand.nextInt(row);
 			rColumn= rand.nextInt(column);
-			while (thereIsMine(rRow,rColumn)){
+			while (thereIsMine(rRow,rColumn)){ //If the cell already has a mine, choose another random numbers
 				rRow= rand.nextInt(row);
 				rColumn= rand.nextInt(column);
 			}
@@ -52,7 +54,7 @@ public class MinesweeperImpl implements Minesweeper{
 	}
 	
 	private Set<Matrix2DCellPosition> newSetPosition (int i, int j){
-		Matrix2DCellPosition position= new Matrix2DCellPosition();
+		Matrix2DCellPosition position= new Matrix2DCellPosition();//this method returns a set of the adjacent coordinates
 		Set<Matrix2DCellPosition> setPosition = new HashSet<Matrix2DCellPosition>();
 		position.setRow(i);
 		position.setColumn(j-1);
@@ -89,7 +91,7 @@ public class MinesweeperImpl implements Minesweeper{
 		return setPosition;
 	}
 	
-	private Boolean validPosition (Integer row, Integer column, Integer rowLimit, Integer columnLimit){
+	private Boolean isAValidPosition (Integer row, Integer column, Integer rowLimit, Integer columnLimit){
 		return (row>-1 && row<rowLimit && column>-1 && column<columnLimit);
 	}
 
@@ -100,7 +102,7 @@ public class MinesweeperImpl implements Minesweeper{
 				if (!this.matrixCell[i][j].getValue().equals(-1)){	
 					Set<Matrix2DCellPosition> setPosition =newSetPosition(i,j);
 					for (Matrix2DCellPosition t: setPosition){
-						if (validPosition(t.getRow(),t.getColumn(),row,column)){
+						if (isAValidPosition(t.getRow(),t.getColumn(),row,column)){
 							if (thereIsMine(t.getRow(),t.getColumn())){
 								this.matrixCell[i][j].setValue(this.matrixCell[i][j].getValue() + 1); //if is a valid position and hasn't got a mine, add 1 to the value of the cell
 							}
@@ -112,6 +114,7 @@ public class MinesweeperImpl implements Minesweeper{
 	}
 	
 	public MinesweeperImpl (Integer row, Integer column, Integer kMines){
+		this.numberOfMines=kMines;
 		createMatrix(row,column);
 		putMines (row,column,kMines);
 		assignValueToEmptyCell (row,column);
@@ -126,7 +129,6 @@ public class MinesweeperImpl implements Minesweeper{
 				Set<com.despegar.highflight.utils.Matrix2DCellPosition> set= MatrixUtils.cascade(this.binaryMatrix,row,col);
 				for (com.despegar.highflight.utils.Matrix2DCellPosition t: set){
 						this.uncover(t.getRow(),t.getColumn());
-				
 				}
 			}
 		}	
@@ -134,10 +136,12 @@ public class MinesweeperImpl implements Minesweeper{
 
 	public void flagAsMine(int row, int col) {
 		this.matrixCell[row][col].setHasAFlag(true);
+		this.numberOfFlags++;
 	}
 
 	public void clearFlag(int row, int col) {
 		this.matrixCell[row][col].setHasAFlag(false);
+		this.numberOfFlags--;
 	}
 
 	private Boolean thereIsAnUncoverMine (){
@@ -167,19 +171,26 @@ public class MinesweeperImpl implements Minesweeper{
 	}
 	
 	public boolean isGameOver() {
-		return (allCellsWithoutMinesAreUncover() || thereIsAnUncoverMine()) ? true: false;
+		return (allCellsWithoutMinesAreUncover() || thereIsAnUncoverMine());
+		//If ALL the cells without mines are uncovers OR there are is ANY mine uncover, the game is over
 	}
 
 	public boolean isWinningGame() {
-		return (allCellsWithoutMinesAreUncover() && !thereIsAnUncoverMine()) ? true:false;
+		return (allCellsWithoutMinesAreUncover() && !thereIsAnUncoverMine());
+		//If ALL the cells without mines are uncovers AND there ISN'T an uncover mine, you winning the game
 	}
 
 	public void display() {
 		int i,j;	
+		System.out.println ("Unflagged mines: "+(this.numberOfMines-this.numberOfFlags)+"\n ");
+		System.out.print ("\t");
+		for(j=0;j<this.matrixCell[0].length;j++){
+		System.out.print ("\t"+j);
+		}
+		System.out.println ("\n");
 		for (i=0;i<this.matrixCell.length;i++){
-			System.out.print ("\n");
+			System.out.print ("\n\t"+i+"\t");
 			for (j=0;j<this.matrixCell[0].length;j++){
-				
 				if (this.matrixCell[i][j].getIsCover() && !this.matrixCell[i][j].getHasAFlag()){
 					System.out.print ("-\t");
 				}
@@ -202,8 +213,13 @@ public class MinesweeperImpl implements Minesweeper{
 
 	public void displayInternal() {
 		int i,j;	
+		System.out.print ("\t");
+		for(j=0;j<this.matrixCell[0].length;j++){
+			System.out.print ("\t"+j);
+		}
+		System.out.println ("\n");
 		for (i=0;i<this.matrixCell.length;i++){
-			System.out.print ("\n");
+			System.out.print ("\n\t"+i+"\t");
 			for (j=0;j<this.matrixCell[0].length;j++){
 				if (thereIsMine (i,j)){
 					System.out.print ("M\t");

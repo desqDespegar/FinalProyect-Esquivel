@@ -15,25 +15,26 @@ public class Main {
 			row=scanner.nextInt();
 			System.out.println ("\n Enter the number of Columns:");
 			column=scanner.nextInt();
-			System.out.println ("\n Enter the number of Mines:");
+			System.out.println ("\n Enter the number of Mines (less than "+row*column+"):");
 			kMine=scanner.nextInt();
 			break;
 		case 1:
-			row=8;
-			column=8;
-			kMine=10;
+			row=4;
+			column=4;
+			kMine=4;
 			break;
 		case 2:
-			row=16;
-			column=16;
-			kMine=50;
+			row=8;
+			column=8;
+			kMine=12;
 			break;
 		case 3:
-			row=16;
-			column=30;
-			kMine=100;
+			row=8;
+			column=10;
+			kMine=30;
 			break;
 		default:
+			System.out.println ("Wrong option!");
 			row=0;
 			column=0;
 			kMine=0;
@@ -45,15 +46,15 @@ public class Main {
 		MinesweeperImpl game = new MinesweeperImpl(row,column,kMine);       
 		game.display();
 		/*System.out.println ("\n Display internal");
-		game.displayInternal();
+		game.displayInternal();		I only use this if i needed, for debug purposes
 		System.out.println ("\nDisplay raw");
 		game.displayRaw();*/
 		while (!game.isGameOver()){
-			System.out.println ("\n What do you want to do?(enter the corresponding letter): ");
+			System.out.println ("\n What do you want to do?('f','u' or 'c'): ");
 			action= scanner.next().charAt(0);
-			System.out.println ("\n Enter the row: ");
+			System.out.println ("\n Enter the row (between 0 and "+(row-1)+"): ");
 			rowN= scanner.nextInt();
-			System.out.println ("\n Enter the column: ");
+			System.out.println ("\n Enter the column (between 0 and "+(column-1)+"): ");
 			columnN= scanner.nextInt();
 			switch (action){
 			case ('u'):
@@ -65,14 +66,17 @@ public class Main {
 			case ('c'):
 				game.clearFlag(rowN, columnN);
 				break;
+			default: 
+				System.out.println ("\n Wrong option! \n");
 			}
 			game.display();
 		}
 		if (game.isWinningGame()){
-			System.out.println ("CONGRATULATION! YOU WIN! :D");
+			System.out.println ("\n CONGRATULATION! YOU WIN! :D");
 		}
 		else{
-				System.out.println ("HA HA! LOSER!");
+				System.out.println ("\n HA HA! LOSER! \n");	
+				game.displayInternal();
 			}		
 	}//End main
 }//End class
