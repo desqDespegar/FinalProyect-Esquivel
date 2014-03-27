@@ -3,15 +3,17 @@ package minesweeper;
 import java.util.Scanner;
 
 public class Main {
-
+	
 	public static void main (String [] args){
 		Integer row,column,kMine,rowN,columnN;
 		Character action;
+		int level;
 		Scanner scanner = new Scanner (System.in);
 		String answer="y";
 		while (answer.equals("y")){
 		System.out.println ("\n Choose the difficulty \n(1_Beginner; 2_Intermediate; 3_Hard; 0_Personalized)");
-		switch (scanner.nextInt()){
+		level=scanner.nextInt();
+		switch (level){
 		case 0:
 			System.out.println ("\n Enter the number of Rows:");
 			row=scanner.nextInt();
@@ -36,16 +38,14 @@ public class Main {
 			kMine=30;
 			break;
 		default:
-			System.out.println ("Wrong option!");
+			System.out.println ("Wrong option, restar the program");
 			row=0;
 			column=0;
 			kMine=0;
-			break;
-			
 		}
 		System.out.println ("\n There is three different actions:\n If you want to Uncover a mine, enter 'u' \n If you want to Put a flag, enter 'f' ,\n If you want to Clear a flag, enter 'c')");
 		System.out.println ("\n When you enter the action, then select a row and a column");
-		MinesweeperImpl game = new MinesweeperImpl(row,column,kMine);       
+		Minesweeper game = new MinesweeperImpl(row,column,kMine);       
 		game.display();
 		/*System.out.println ("\n Display internal");
 		game.displayInternal();		I only use this if i needed, for debug purposes
@@ -68,8 +68,8 @@ public class Main {
 			case ('c'):
 				game.clearFlag(rowN, columnN);
 				break;
-			default: 
-				System.out.println ("\n Wrong option! \n");
+			default:
+				System.out.println ("Invalid action, must be 'u', 'f' or 'c'. Maybe the BloqMayus is actived");
 			}
 			game.display();
 		}
