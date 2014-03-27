@@ -55,41 +55,20 @@ public class MinesweeperImpl implements Minesweeper{
 		}
 	}
 	
-	private Set<Matrix2DCellPosition> newSetPosition (int i, int j){
-		Matrix2DCellPosition position= new Matrix2DCellPosition();//this method returns a set of the adjacent coordinates
+	private Set<Matrix2DCellPosition> newSetPosition (int row, int col){
+		Matrix2DCellPosition position;//this method returns a set of the adjacent coordinates
 		Set<Matrix2DCellPosition> setPosition = new HashSet<Matrix2DCellPosition>();
-		position.setRow(i);
-		position.setColumn(j-1);
-		setPosition.add(position);
-		position= new Matrix2DCellPosition();
-		position.setRow(i);
-		position.setColumn(j+1);
-		setPosition.add(position);
-		position= new Matrix2DCellPosition();
-		position.setRow(i-1);
-		position.setColumn(j);
-		setPosition.add(position);
-		position= new Matrix2DCellPosition();
-		position.setRow(i+1);
-		position.setColumn(j);
-		setPosition.add(position);
-		position= new Matrix2DCellPosition();
-		position.setRow(i-1);
-		position.setColumn(j-1);
-		setPosition.add(position);
-		position= new Matrix2DCellPosition();
-		position.setRow(i-1);
-		position.setColumn(j+1);
-		setPosition.add(position);
-		position= new Matrix2DCellPosition();
-		position.setRow(i+1);
-		position.setColumn(j-1);
-		setPosition.add(position);
-		position= new Matrix2DCellPosition();
-		position.setRow(i+1);
-		position.setColumn(j+1);
-		setPosition.add(position);
-		
+		Integer i,j;
+		for (i=-1;i<2;i++){
+			for (j=-1;j<2;j++){
+				if (!i.equals(0) || !j.equals(0)){
+					position= new Matrix2DCellPosition();
+					position.setRow(row+i);
+					position.setColumn(col+j);
+					setPosition.add(position);
+				}
+			}
+		}
 		return setPosition;
 	}
 	
@@ -122,7 +101,6 @@ public class MinesweeperImpl implements Minesweeper{
 		putMines (row,column,kMines);
 		assignValueToEmptyCell (row,column);
 		createBinaryMatrix();
-		
 	}
 	
 	public void uncover(int row, int col) {
@@ -133,15 +111,15 @@ public class MinesweeperImpl implements Minesweeper{
 			else{
 				this.matrixCell[row][col].setIsCover(false);
 				this.numberCellsWithoutMines--;
-			if (this.matrixCell[row][col].getValue().equals(0)){
-				Set<com.despegar.highflight.utils.Matrix2DCellPosition> set= MatrixUtils.cascade(this.binaryMatrix,row,col);
-				for (com.despegar.highflight.utils.Matrix2DCellPosition t: set){
-					if (this.matrixCell[t.getRow()][t.getColumn()].getIsCover()){
-					this.matrixCell[t.getRow()][t.getColumn()].setIsCover(false);
-					this.numberCellsWithoutMines--;
+				if (this.matrixCell[row][col].getValue().equals(0)){
+					Set<com.despegar.highflight.utils.Matrix2DCellPosition> set= MatrixUtils.cascade(this.binaryMatrix,row,col);
+					for (com.despegar.highflight.utils.Matrix2DCellPosition t: set){
+						if (this.matrixCell[t.getRow()][t.getColumn()].getIsCover()){
+							this.matrixCell[t.getRow()][t.getColumn()].setIsCover(false);
+							this.numberCellsWithoutMines--;
+						}
 					}
 				}
-			}
 			}
 		}	
 	}
@@ -157,41 +135,13 @@ public class MinesweeperImpl implements Minesweeper{
 		this.matrixCell[row][col].setHasAFlag(false);
 		this.numberOfFlags--;
 	}
-
-	/*private Boolean thereIsAnUncoverMine (){
-		int i,j;
-		Boolean var=false;
-		for (i=0;i<this.matrixCell.length;i++){
-			for (j=0;j<this.matrixCell[0].length;j++){
-				if (this.matrixCell[i][j].getValue().equals(-1) && this.matrixCell[i][j].getIsCover().equals(false)){
-					var=true;
-				}
-			}
-		}
-		return var;
-	}
-	
-	private Boolean allCellsWithoutMinesAreUncover(){
-		int i,j;
-		Boolean var=true;
-		for (i=0;i<this.matrixCell.length;i++){
-			for (j=0;j<this.matrixCell[0].length;j++){
-				if (!this.matrixCell[i][j].getValue().equals(-1) && this.matrixCell[i][j].getIsCover().equals(true)){
-					var=false;
-				}
-			}
-		}
-		return var;
-	}*/
 	
 	public boolean isGameOver() {
-		//return (allCellsWithoutMinesAreUncover() || thereIsAnUncoverMine());
 		//If ALL the cells without mines are uncovers OR there are is ANY mine uncover, the game is over
 		return (this.numberCellsWithoutMines.equals(0) || this.thereIsAnUncoverMine);
 	}
 
 	public boolean isWinningGame() {
-		//return (allCellsWithoutMinesAreUncover() && !thereIsAnUncoverMine());
 		//If ALL the cells without mines are uncovers AND there ISN'T an uncover mine, you winning the game
 		return (this.numberCellsWithoutMines.equals(0) && !this.thereIsAnUncoverMine);
 	}
@@ -201,7 +151,7 @@ public class MinesweeperImpl implements Minesweeper{
 		System.out.println ("Unflagged mines: "+(this.numberOfMines-this.numberOfFlags)+"\n ");
 		System.out.print ("\t ");
 		for(j=0;j<this.matrixCell[0].length;j++){
-		System.out.print ("   "+j);
+			System.out.print ("   "+j);
 		}
 		System.out.print ("\n");
 		for (i=0;i<this.matrixCell.length;i++){
@@ -239,7 +189,6 @@ public class MinesweeperImpl implements Minesweeper{
 			for (j=0;j<this.matrixCell[0].length;j++){
 				if (thereIsMine (i,j)){
 					System.out.print ("M   ");
-
 				}
 				else{
 					System.out.print (this.matrixCell[i][j].getValue()+"   ");
